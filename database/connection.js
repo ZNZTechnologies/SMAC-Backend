@@ -16,10 +16,6 @@ const sequelize = new Sequelize(
   }
 );
 
-console.log('DATABASENAME >>>', process.env.DATABASENAME || DB)
-console.log('DATABASEUSERNAME >>>', process.env.DATABASEUSERNAME)
-console.log('DATABASEPASSWORD >>>', process.env.DATABASEPASSWORD)
-console.log('DATABASEHOST >>>', process.env.DATABASEHOST)
 module.exports = sequelize;
 
 // // database connection
