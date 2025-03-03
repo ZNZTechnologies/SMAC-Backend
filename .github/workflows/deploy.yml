@@ -56,6 +56,6 @@ jobs:
             echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
             echo "USER_EMAIL=${{ secrets.USER_EMAIL }}" >> .env
             echo "VERIFYUSERLINK=${{ secrets.VERIFYUSERLINK }}" >> .env
-            pm2 start /var/www/znz/SMAC-Backend/src/index.js
+            pm2 start /var/www/znz/SMAC-Backend/index.js
             exit
           EOF
