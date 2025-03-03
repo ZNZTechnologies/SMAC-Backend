@@ -1,0 +1,61 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Connection
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            sudo chown -R ubuntu:ubuntu .
+            sudo chmod -R 755 .
+            cd /var/www/znz
+            test -d /smac-backend && sudo rm -rf ./*
+            git clone ${{ secrets.REPO_LINK }}
+            cd /var/www/znz/smac-backend
+            git checkout main
+            pnpm install --production
+            echo "NODE_ENV=production" > .env
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "BACKENDLINK=${{ secrets.BACKENDLINK }}" >> .env
+            echo "CLIENT_ID_GOOGLE=${{ secrets.CLIENT_ID_GOOGLE }}" >> .env
+            echo "CLIENT_SECRET_GOOGLE=${{ secrets.CLIENT_SECRET_GOOGLE }}" >> .env
+            echo "CLOUD_API_KEY=${{ secrets.CLOUD_API_KEY }}" >> .env
+            echo "CLOUD_API_SECRET_KEY=${{ secrets.CLOUD_API_SECRET_KEY }}" >> .env
+            echo "CLOUD_NAME=${{ secrets.CLOUD_NAME }}" >> .env
+            echo "DATABASENAME=${{ secrets.DATABASENAME }}" >> .env
+            echo "DATABASEPASSWORD=${{ secrets.DATABASEPASSWORD }}" >> .env
+            echo "DATABASEUSERNAME=${{ secrets.DATABASEUSERNAME }}" >> .env
+            echo "EMAILFRONTENDLINK=${{ secrets.EMAILFRONTENDLINK }}" >> .env
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
+            echo "EXPIRY_TIME=${{ secrets.EXPIRY_TIME }}" >> .env
+            echo "FRONTENDSIGNPAGE=${{ secrets.FRONTENDSIGNPAGE }}" >> .env
+            echo "JAZZCASH_CARD_URL=${{ secrets.JAZZCASH_CARD_URL }}" >> .env
+            echo "JAZZCASH_INTEGRITY_SALT=${{ secrets.JAZZCASH_INTEGRITY_SALT }}" >> .env
+            echo "JAZZCASH_MERCHANT_ID=${{ secrets.JAZZCASH_MERCHANT_ID }}" >> .env
+            echo "JAZZCASH_MWALLET_URL=${{ secrets.JAZZCASH_MWALLET_URL }}" >> .env
+            echo "JAZZCASH_PASSWORD=${{ secrets.JAZZCASH_PASSWORD }}" >> .env
+            echo "JAZZCASH_RETURN_URL=${{ secrets.JAZZCASH_RETURN_URL }}" >> .env
+            echo "JAZZCASH_STATUS_INQUIRY_URL=${{ secrets.JAZZCASH_STATUS_INQUIRY_URL }}" >> .env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            echo "USER_EMAIL=${{ secrets.USER_EMAIL }}" >> .env
+            echo "VERIFYUSERLINK=${{ secrets.VERIFYUSERLINK }}" >> .env
+            pm2 restart SMAC-BE || pm2 start /var/www/znz/smac-backend/src/index.js --name SMAC-BE
+            exit
+          EOF

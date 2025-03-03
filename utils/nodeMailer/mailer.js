@@ -9,8 +9,8 @@ const newEmailQueue = new Queue("newEmail", "redis:127.0.0.1:6379");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.user_email,
-    pass: process.env.email_password,
+    user: process.env.USER_EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 
@@ -39,7 +39,7 @@ const getContent = (title, heading, paragraph, buttonText, url, jwtToken) => {
 
 const handleRegUser = async (jwtToken, email) => {
 
-  const content = getContent("Verify Email", "Email Verification", "To Verify Email", "Verify User Email", process.env.verifyUserLink, jwtToken);
+  const content = getContent("Verify Email", "Email Verification", "To Verify Email", "Verify User Email", process.env.VERIFYUSERLINK, jwtToken);
 
 
   await transporter.sendMail({
@@ -52,7 +52,7 @@ const handleRegUser = async (jwtToken, email) => {
 
 const handleResetPassword = async (jwtToken, email) => {
 
-  const content = getContent("Reset Password", "Reset Password", "To reset the password", "Reset Password", process.env.emailFrontEndLink, jwtToken)
+  const content = getContent("Reset Password", "Reset Password", "To reset the password", "Reset Password", process.env.EMAILFRONTENDLINK, jwtToken)
 
   await transporter.sendMail({
     to: email,

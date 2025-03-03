@@ -6,8 +6,8 @@ const { validateRegister } = require("../../joiSchemas/Auth/auth");
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.client_ID_google,
-      clientSecret: process.env.client_secret_google,
+      clientID: process.env.CLIENT_ID_GOOGLE,
+      clientSecret: process.env.CLIENT_SECRET_GOOGLE,
       callbackURL: "http://localhost:8080/api/auth/user/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {

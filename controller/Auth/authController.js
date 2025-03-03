@@ -78,8 +78,8 @@ const registerUser = async (req, res) => {
         role: newUser.role,
         isEmailVerified: newUser.isEmailVerified
       },
-      process.env.Secret_KEY,
-      { expiresIn: process.env.expiry_time }
+      process.env.SECRET_KEY,
+      { expiresIn: process.env.EXPIRY_TIME }
     );
     await handleRegUser(jwtToken, newUser.email)
     const data = {
@@ -114,8 +114,8 @@ const registerSuperAdmin = async (req, res) => {
         role: newUser.role,
         isEmailVerified: newUser.isEmailVerified
       },
-      process.env.Secret_KEY,
-      { expiresIn: process.env.expiry_time }
+      process.env.SECRET_KEY,
+      { expiresIn: process.env.EXPIRY_TIME }
     );
     await handleRegUser(jwtToken, newUser.email)
     const data = { user: newUser, token: jwtToken }
@@ -134,7 +134,7 @@ const verifyEmail = async (req, res) => {
     let userEmail;
     if (!accessToken) return res.status(400).send(responseObject("Token Not Available", 400, null, "Token is required"))
 
-    jwt.verify(accessToken, process.env.Secret_KEY, (err, decoded) => {
+    jwt.verify(accessToken, process.env.SECRET_KEY, (err, decoded) => {
       if (err) {
         console.error("JWT verification failed:", err.message);
         return res.status(401).send(responseObject("Unothorized", 401, null, "Unothorized"));
@@ -164,7 +164,7 @@ const resendEmail = async (req, res) => {
   try {
     const accessToken = req.query.jwtToken;
     const decoded = await new Promise((resolve, reject) => {
-      jwt.verify(accessToken, process.env.Secret_KEY, { ignoreExpiration: true }, (err, decoded) => {
+      jwt.verify(accessToken, process.env.SECRET_KEY, { ignoreExpiration: true }, (err, decoded) => {
         console.log(decoded);
         if (err) {
           // Handle the error, if needed
@@ -192,8 +192,8 @@ const resendEmail = async (req, res) => {
         email: user.email,
         isEmailVerified: user.isEmailVerified
       },
-      process.env.Secret_KEY,
-      { expiresIn: process.env.expiry_time }
+      process.env.SECRET_KEY,
+      { expiresIn: process.env.EXPIRY_TIME }
     );
     await handleRegUser(jwtToken, user.email);
     return res.status(200).send(responseObject("Email Send Successfully", 200, "", "Email Send Successfully"))
@@ -236,8 +236,8 @@ const loginUser = async (req, res) => {
         role: userToFind.role,
         isEmailVerified: userToFind.isEmailVerified
       },
-      process.env.Secret_KEY,
-      { expiresIn: process.env.expiry_time }
+      process.env.SECRET_KEY,
+      { expiresIn: process.env.EXPIRY_TIME }
     );
     const data = { user: userToFind, token: jwtToken, }
     return res.status(201).send(responseObject("user successfully login", 201, data))
@@ -294,8 +294,8 @@ const googleLoginController = async (req, res) => {
         role: user.role,
         isEmailVerified: user.isEmailVerified
       },
-      process.env.Secret_KEY,
-      { expiresIn: process.env.expiry_time }
+      process.env.SECRET_KEY,
+      { expiresIn: process.env.EXPIRY_TIME }
     );
     const data = { user, token: jwtToken, }
     return res.status(200).send(responseObject("user successfully login", 200, data))

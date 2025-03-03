@@ -8,7 +8,7 @@ const authenticationSecret = (socket, next) => {
             return next(new Error('Unauthorized: Token not available'));
         }
 
-        jwt.verify(token, process.env.Secret_KEY, async (err, decoded) => {
+        jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
             if (err) {
                 console.error("JWT verification failed:", err.message);
                 return next(new Error('Unauthorized: Invalid token'));

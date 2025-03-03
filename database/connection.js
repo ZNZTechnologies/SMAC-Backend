@@ -1,5 +1,5 @@
 // database connection
-const DB = process.env.databaseName;
+const DB = process.env.DATABASENAME;
 const { Sequelize } = require("sequelize");
 
 // database name znz, username root , password null (empty), host localhost
@@ -7,11 +7,11 @@ const { Sequelize } = require("sequelize");
 // local db code
 const sequelize = new Sequelize(
   DB,
-  process.env.databaseUserName,
-  process.env.databasePassword,
+  process.env.DATABASEUSERNAME,
+  process.env.DATABASEPASSWORD,
   {
-    host: process.env.databaseHost,
-    dialect: process.env.databaseDialect || "mssql",
+    host: process.env.DATABASEHOST,
+    dialect: "mysql",
     logging: false,
   }
 );

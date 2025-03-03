@@ -18,7 +18,7 @@ function checkJWT(req, res, next) {
         );
     }
     const accessToken = authHeader.split(" ")[1];
-    jwt.verify(accessToken, process.env.Secret_KEY, async (err, decoded) => {
+    jwt.verify(accessToken, process.env.SECRET_KEY, async (err, decoded) => {
       if (err) {
         // console.error("JWT verification failed:", err.message);
         return res
@@ -81,7 +81,7 @@ function adminCheckJWT(req, res, next) {
     const accessToken = authHeader.split(" ")[1];
     const userInfo = jwt.decode(accessToken);
     if (userInfo.role === "admin") {
-      jwt.verify(accessToken, process.env.Secret_KEY, async (err, decoded) => {
+      jwt.verify(accessToken, process.env.SECRET_KEY, async (err, decoded) => {
         if (err) {
           console.error("JWT verification failed:", err.message);
           return res

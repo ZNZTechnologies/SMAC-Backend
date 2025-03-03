@@ -76,7 +76,7 @@ const forgotPassword = async (req, res) => {
         email: userToFind.email,
         isPassReset: true
       },
-      process.env.Secret_KEY,
+      process.env.SECRET_KEY,
       { expiresIn: '20m' }
     );
     await handleResetPassword(jwtToken, userToFind.email)
@@ -149,7 +149,7 @@ const additionalUserDetails = async (req, res) => {
     // Split the token on the base of space
     const accessToken = authHeader.split(" ")[1];
     // Verify token
-    const decoded = jwt.verify(accessToken, process.env.Secret_KEY);
+    const decoded = jwt.verify(accessToken, process.env.SECRET_KEY);
     // Extract user email from decoded information
     const userEmail = decoded.email;
     // Check if information is already added

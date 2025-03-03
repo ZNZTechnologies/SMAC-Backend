@@ -77,8 +77,8 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const jwt = urlParams.get('jwt');
-    // const backendLink = urlParams.get('backendLink')
-    const backendLink = "http://192.168.0.108:8080"
+    // const BACKENDLINK = urlParams.get('BACKENDLINK')
+    const BACKENDLINK = "http://192.168.0.108:8080"
 
 
     const handleOnClick = async () => {
@@ -86,7 +86,7 @@
             const button = document.getElementById('resendButton');
             button.disabled = true; // Disable the button
             button.style.backgroundColor = '#a0a0a0';
-            const res = await fetch(`${backendLink}/api/auth/user/resend-email?jwtToken=${jwt}`);
+            const res = await fetch(`${BACKENDLINK}/api/auth/user/resend-email?jwtToken=${jwt}`);
             const para = document.getElementById('text');
 
             if (res.status === 200) {
