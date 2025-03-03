@@ -71,7 +71,7 @@ require("./association/association");
 require("./utils/passport/passport");
 // cron job to delete stories
 require("./utils/cronjob/cronjob");
-// const routes = require("./routes");
+const routes = require("./routes");
 
 const { Server } = require("socket.io");
 const { setSharedIO, getSharedIO } = require("./socket/shared");
@@ -89,14 +89,14 @@ setSharedIO(
 require("./socket")(getSharedIO());
 
 // app.use(limiter)
-// app.use("/api", routes);
+app.use("/api", routes);
 
 // commecting this for aws
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 // });
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.send("Hello!");
 });
 
@@ -104,7 +104,7 @@ app.get("/", (req, res) => {
 const main = async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync();
+    // await sequelize.sync();
     await closeConnectionGracefully(sequelize);
 
     console.log("Connection has been established successfully.");
