@@ -91,9 +91,10 @@ require("./socket")(getSharedIO());
 // app.use(limiter)
 // app.use("/api", routes);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
-});
+// commecting this for aws
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+// });
 
 app.get("/", (req, res) => {
   res.send("Hello!");
