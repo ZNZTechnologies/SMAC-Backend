@@ -26,9 +26,9 @@ jobs:
             sudo chown -R ubuntu:ubuntu .
             sudo chmod -R 755 .
             cd /var/www/znz
-            test -d /smac-backend && sudo rm -rf ./*
+            test -d /SMAC-Backend && sudo rm -rf ./*
             git clone ${{ secrets.REPO_LINK }}
-            cd /var/www/znz/smac-backend
+            cd /var/www/znz/SMAC-Backend
             git checkout main
             pnpm install --production
             echo "NODE_ENV=production" > .env
@@ -56,6 +56,6 @@ jobs:
             echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
             echo "USER_EMAIL=${{ secrets.USER_EMAIL }}" >> .env
             echo "VERIFYUSERLINK=${{ secrets.VERIFYUSERLINK }}" >> .env
-            pm2 restart SMAC-BE || pm2 start /var/www/znz/smac-backend/src/index.js --name SMAC-BE
+            pm2 restart SMAC-BE || pm2 start /var/www/znz/SMAC-Backend/src/index.js --name SMAC-BE
             exit
           EOF
