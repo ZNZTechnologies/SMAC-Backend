@@ -99,7 +99,7 @@ app.get("*", (req, res) => {
 const main = async () => {
   try {
     await sequelize.authenticate();
-    // await sequelize.sync({ alter: true });
+    await sequelize.sync();
     await closeConnectionGracefully(sequelize);
 
     console.log("Connection has been established successfully.");
