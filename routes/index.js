@@ -7,7 +7,7 @@ const checkExistingToken = require("../middleware/previousToken");
 
 const router = express.Router();
 
-const authR = require("../routes/Auth/auth");
+// const authR = require("../routes/Auth/auth");
 const adminR = require("../routes/Admin/index");
 const userR = require("../routes/User/userRoutes");
 const storyR = require("../routes/Story/story");
@@ -33,7 +33,7 @@ const refundTicketsR = require("../routes/RefundTickets"); // temporary
 
 router.use("/open", openRoutes); //that is a route if user want to access information without loggin in
 router.use("/user", userR);
-router.use("/auth/user", authR);
+// router.use("/auth/user", authR);
 
 router.use("/validatetoken", checkExistingToken, checkJWT, tokenR);
 
