@@ -1,6 +1,6 @@
 const userModel = require("../../models/userModel");
 const { Op } = require('sequelize')
-const bcrypt = require("bcrypt");
+const { hashPassword, verifyPassword } = require("../../utils/encypt-dercypt");
 const jwt = require("jsonwebtoken");
 const { validateRegister, validateLogin, validateGoogleLogin,validateDeleteUser } = require("../../joiSchemas/Auth/auth");
 const { handleRegUser } = require("../../utils/nodeMailer/mailer");
@@ -22,7 +22,7 @@ const deleteUser = async (req, res) => {
       if (!userToFind) {
         return res.status(400).send(responseObject("invalid email or password", 400, "", "invalid email or password"))
       }
-      const validatePassword = await bcrypt.compare(
+      const validatePassword = verifyPassword(
         password,
         userToFind.password
       );
@@ -50,7 +50,7 @@ const registerUser = async (req, res) => {
   if (error) return res.status(400).send(responseObject(error.message, 400, "", error.message))
   try {
     const { password } = value
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = hashPassword(password);
     const chkOldUser = await userModel.findOne({
       where: {
         [Op.or]: [
@@ -97,7 +97,7 @@ const registerSuperAdmin = async (req, res) => {
     const { error, value } = validateRegister(req.body)
     if (error) return res.status(400).send(responseObject(error.message, 400, "", error.message))
     const { password } = value
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = hashPassword(password);
     const chkOldUser = await userModel.findByPk(value.email)
     if (chkOldUser) return res.status(400).send(responseObject("User Already Exist", 400, "", "User Already Exist"))
     const newUser = await userModel.create({
@@ -219,7 +219,7 @@ const loginUser = async (req, res) => {
     if (userToFind.isBlocked) return res.status(401).send(responseObject("User is Blocked", 401, "", "User is Blocked Can't Access"))
     if (userToFind.googleUser) return res.status(400).send(responseObject('Cant Login using Email and password', 400, "", "Google User"))
     // comparing the hashed password with the user's password in the req.body
-    const validatePassword = await bcrypt.compare(
+    const validatePassword = verifyPassword(
       password,
       userToFind.password
     );

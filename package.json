@@ -15,7 +15,6 @@
   "author": "Muaz Zia",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "bull": "^4.12.2",
     "cloudinary": "^1.41.3",

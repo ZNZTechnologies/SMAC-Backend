@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-
+const { hashPassword, verifyPassword } = require("../../utils/encypt-dercypt");
 const userModel = require("../../models/userModel");
 const tokenModel = require("../../models/blacklistModel");
 const { handleResetPassword } = require("../../utils/nodeMailer/mailer");
@@ -108,7 +107,7 @@ const setPassword = async (req, res) => {
     return res.status(400).send(responseObject("The password and confirm password do not match", 400, "", "The password and confirm password do not match"));
   }
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = hashPassword(password);
     await userPassword.update(
       { password: hashedPassword },
       { where: { email: email } }
@@ -333,14 +332,14 @@ const changePassword = async (req, res) => {
     const user = await userModel.findByPk(req.userEmail)
     if (!user) return res.status(404).send(responseObject("User Not Found", 404, "", "User Not Found"))
 
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password)
+    const isPasswordValid = verifyPassword(oldPassword, user.password);
     if (!isPasswordValid) {
       return res.status(401).json(responseObject("Invalid Old Password", 401, "", "Invalid Old Password"));
     }
 
     if (newPassword === oldPassword) return res.status(400).send(responseObject("The New Password Must Be Different From The Old Password", 400, null, "Old And Previous Are Same"))
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = hashPassword(password);
     // Update user's password in the database
     await user.update({ password: hashedNewPassword });
     return res.status(200).json(responseObject("Password Changed Successfully", 200, user));
