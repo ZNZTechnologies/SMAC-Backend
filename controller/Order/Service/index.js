@@ -76,9 +76,13 @@ const createOrder = async (req, res) => {
               paymentReponseObject.taxAmount = service.serviceFee - parseFloat(pr.pp_Amount);
               paymentReponseObject.amountReceived = service.serviceFee - paymentReponseObject.taxAmount;
               paymentReponseObject.platformFee = 5 * service.serviceFee / 100;
-            } else if(pr.pp_ResponseCode == '999') {
+            } else if(pr.pp_ResponseCode == '999') { // TBD bcz it's also being used for failed ones from jazzcash
                 paymentReponseObject.status = 'pending';
                 paymentReponseObject.statusMessage = 'thank you for using jazzcash, your payment has been made and will be transfered shortly, plz do not make another transaction';
+                paymentReponseObject.response = pr;
+                paymentReponseObject.taxAmount = service.serviceFee - parseFloat(pr.pp_Amount);
+                paymentReponseObject.amountReceived = service.serviceFee - paymentReponseObject.taxAmount;
+                paymentReponseObject.platformFee = 5 * service.serviceFee / 100;
             } else {
               paymentReponseObject.status = 'failed';
               paymentReponseObject.statusMessage = pr.pp_ResponseCode == '199' ? 'Authentication Failed' : pr.pp_ResponseMessage;
@@ -87,6 +91,7 @@ const createOrder = async (req, res) => {
             paymentReponseObject.status = 'failed';
             paymentReponseObject.statusMessage = 'Network Error';
        }
+       paymentReponseObject.txnReference = pr.pp_TxnRefNo;
 
         let p = await paymentModel.create(paymentReponseObject, { transaction: t });
 
@@ -96,12 +101,8 @@ const createOrder = async (req, res) => {
             await t.rollback();
             return res.status(400).send(responseObject(paymentReponseObject.statusMessage, 400, "", "Cannot create Order because of failed payment"))
         } else {
+            await order.update({ paymentId: p.dataValues.paymentId }, { transaction: t });
             await t.commit();
-            await serviceOrder.update({ paymentId: p.dataValues.paymentId }, {
-                where: {
-                    orderId: order.orderId
-                }
-            });
 
             let data = await serviceOrder.findByPk(order.orderId, {
                 ...includeAttributeObject

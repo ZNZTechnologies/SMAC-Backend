@@ -95,12 +95,8 @@ const createOrder = async (req, res) => {
             await t.rollback();
             return res.status(400).send(responseObject(paymentReponseObject.statusMessage, 400, "", "Cannot create Order because of failed payment"))
         } else {
+            await order.update({ paymentId: p.dataValues.paymentId }, { transaction: t });
             await t.commit();
-            await courseOrder.update({ paymentId: p.dataValues.paymentId }, {
-                where: {
-                    orderId: order.orderId
-                }
-            });
 
             let data = await courseOrder.findByPk(order.orderId, {
                 ...includeAttributeObject

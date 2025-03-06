@@ -1,12 +1,9 @@
-// database connection
-const DB = process.env.DATABASENAME;
+
 const { Sequelize } = require("sequelize");
 
-// database name znz, username root , password null (empty), host localhost
-
-// local db code
+// from .env (for both local and live)
 const sequelize = new Sequelize(
-  DB,
+  process.env.DATABASENAME,
   process.env.DATABASEUSERNAME,
   process.env.DATABASEPASSWORD,
   {
@@ -18,12 +15,21 @@ const sequelize = new Sequelize(
 
 module.exports = sequelize;
 
-// // database connection
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // const { Sequelize } = require("sequelize");
 
-// const sequelize = new Sequelize(process.env.databaseUrl, {
+// // without .env (for old setup)
+// const sequelize = new Sequelize(
+//   'db_name',
+//   'db_username',
+//   'db_password',
+//   {
 //   dialect: "mysql",
 //   logging: false,
+//   host: 'db_host', // just ip_address like 127.0.0.1
 //   pool: {
 //     max: 100, // maximum number of connections in pool
 //     min: 5, // minimum number of connections in pool
@@ -32,7 +38,7 @@ module.exports = sequelize;
 //   },
 //   dialectOptions: {
 //     ssl: {
-//       rejectUnauthorized: true, // Set to false only if using self-signed certificates
+//       rejectUnauthorized: false, // Set to false only if using self-signed certificates
 //     },
 //   },
 // });

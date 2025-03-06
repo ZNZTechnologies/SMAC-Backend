@@ -71,4 +71,8 @@ const makeWalletPayment = async (data) => {
 module.exports = {
     parseResponse,
     makeWalletPayment,
+    generateTimeValues,
+    sortAndGenerateHASH,
+    pingAPI,
+    parseResponse
 }

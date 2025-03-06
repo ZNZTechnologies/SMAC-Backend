@@ -22,6 +22,10 @@ const paymentModel = sequelize.define("payments", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    txnReference: { // pp_TxnRefNo
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     response: {
         type: DataTypes.JSON,
         allowNull: true,
