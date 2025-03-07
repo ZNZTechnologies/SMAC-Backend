@@ -8,7 +8,9 @@ const http = require("http");
 const path = require("path");
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: '*'
+}));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -96,8 +98,53 @@ app.use("/api", routes);
 //   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 // });
 
-app.get("/test", (req, res) => {
-  res.send("Hello!");
+// app.get("/test", (req, res) => {
+//   res.send("Hello!");
+// });
+
+app.post('/test', async(req, res) => {
+  // let p = require('./utils/jazzcash/index').generateTimeValues({
+  //   MerchantID: process.env.JAZZCASH_MERCHANT_ID,
+  //   Password: process.env.JAZZCASH_PASSWORD,
+  //   ReturnURL: process.env.JAZZCASH_RETURN_URL,
+  //   Amount: 200,
+  //   BillReference: "billRef",
+  //   Description: "Product test description",
+  //   Language: "EN",
+  //   TxnCurrency: "PKR",
+  //   TxnType: "MPAY",
+  //   Version: "1.1"
+  // });
+  let p = require('./utils/jazzcash/index').generateTimeValues({
+    pp_IsRegisteredCustomer: 'yes',
+    pp_ShouldTokenizeCardNumber: 'yes',
+    pp_CustomerID: '25352',
+    pp_CustomerEmail: 'abc@abc.com',
+    pp_CustomerMobile: '03331234567',
+    pp_Version: '2.0',
+    pp_TxnType: 'MPAY',
+    pp_MerchantID: process.env.JAZZCASH_MERCHANT_ID,
+    pp_Password: process.env.JAZZCASH_PASSWORD,
+    pp_Amount: '200',
+    pp_TxnCurrency: 'PKR',
+    pp_BillReference: 'billRef',
+    pp_Description: 'Description of transaction',
+    pp_CustomerCardNumber: '5123450000000008',
+    pp_CustomerCardCVV: '100',
+    pp_CustomerCardExpiry: '01/39',
+    pp_DiscountedAmount: '',
+    pp_DiscountBank: '',
+    pp_UsageMode: 'API'
+  });
+  console.log('p1 >>>', p)
+  p = require('./utils/jazzcash/index').sortAndGenerateHASH(p);
+  console.log('p2 >>>', JSON.stringify(p))
+  //
+  let r = await require('./utils/jazzcash/index').pingAPI(process.env.JAZZCASH_CARD_URL, p);
+  console.log('just after API call....', r)
+  // r = await require('./utils/jazzcash/index').parseResponse(r.body);
+  console.log('r >>>>>>>>>', r)
+  res.send(r)
 });
 
 // server
@@ -109,7 +156,7 @@ const main = async () => {
 
     console.log("Connection has been established successfully.");
 
-    const PORT = process.env.PORT || "8080";
+    const PORT = process.env.PORT || "5000";
     server.listen(PORT, () => {
       console.log("app is listening of PORT: ", PORT);
     });
