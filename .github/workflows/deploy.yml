@@ -25,12 +25,9 @@ jobs:
           ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             sudo chown -R ubuntu:ubuntu .
             sudo chmod -R 755 .
-            #cd /var/www/znz
-            pm2 stop /var/www/znz/SMAC-Backend/index.js
-            #test -d /SMAC-Backend && sudo rm -rf ./*
-            #git clone ${{ secrets.REPO_LINK }}
-            cd /var/www/znz/SMAC-Backend
-            git pull
+          #  pm2 stop /var/www/SMAC-Backend/index.js
+            cd /var/www/SMAC-Backend
+            git pull origin main
             pnpm install --production
             echo "NODE_ENV=production" > .env
             echo "PORT=${{ secrets.PORT }}" >> .env
@@ -57,7 +54,6 @@ jobs:
             echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
             echo "USER_EMAIL=${{ secrets.USER_EMAIL }}" >> .env
             echo "VERIFYUSERLINK=${{ secrets.VERIFYUSERLINK }}" >> .env
-            pm2 start /var/www/znz/SMAC-Backend/index.js
-            pm2 save
+            pm2 start /var/www/SMAC-Backend/index.js
             exit
           EOF
