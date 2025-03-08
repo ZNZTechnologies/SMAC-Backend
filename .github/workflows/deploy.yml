@@ -25,9 +25,9 @@ jobs:
           ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             sudo chown -R ubuntu:ubuntu .
             sudo chmod -R 755 .
-          #  pm2 stop /var/www/SMAC-Backend/index.js
+            # pm2 stop /var/www/SMAC-Backend/index.js
             cd /var/www/SMAC-Backend
-            git pull origin main
+            git pull
             pnpm install --production
             echo "NODE_ENV=production" > .env
             echo "PORT=${{ secrets.PORT }}" >> .env
