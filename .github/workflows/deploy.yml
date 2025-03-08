@@ -23,12 +23,10 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            sudo chown -R ubuntu:ubuntu .
-            sudo chmod -R 755 .
             # pm2 stop /var/www/SMAC-Backend/index.js
             cd /var/www/SMAC-Backend
-            git pull
-            pnpm install --production
+            sudo git pull origin main
+            sudo pnpm install --production
             echo "NODE_ENV=production" > .env
             echo "PORT=${{ secrets.PORT }}" >> .env
             echo "BACKENDLINK=${{ secrets.BACKENDLINK }}" >> .env
