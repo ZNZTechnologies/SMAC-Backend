@@ -23,7 +23,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            # pm2 stop /var/www/SMAC-Backend/index.js
+            pm2 stop /var/www/SMAC-Backend/index.js
             cd /var/www/SMAC-Backend
             sudo chown -R ubuntu:ubuntu .
             sudo chmod -R 755 .
